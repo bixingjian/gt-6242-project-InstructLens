@@ -8,9 +8,15 @@ from ast import literal_eval
 import matplotlib.pyplot as plt
 from sentence_transformers import SentenceTransformer, util
 import torch
+import tiktoken
 
 st.set_page_config(page_icon="🤖", layout="wide")
 st.markdown("<h2 style='text-align: center;'>InstructLens: A Toolkit for Visualizing Instructions via Aggregated Semantic and Linguistic Rules</h2>", unsafe_allow_html=True)
+
+def get_token_count(sentence: str) -> int:
+    encoding = tiktoken.get_encoding("cl100k_base")
+    num_tokens = len(encoding.encode(sentence))
+    return num_tokens
 
 def main():
     # Load csv file
@@ -115,6 +121,50 @@ def main():
         #                 st.write(f"Output: {df.iloc[idx]['output']}")
         #                 st.write(f"Similarity: {similarities[idx]:.4f}")
         #                 st.write("---------")
+
+
+    # single sentence word len + token
+    st.subheader("Single Sentence Analysis")
+    token_counts = []
+    char_lengths = []
+    for index, row in df.iterrows():
+        combined_text = ' '.join([str(row['instruction']), str(row['input']), str(row['output'])])
+        token_counts.append(get_token_count(combined_text))
+        char_lengths.append(len(combined_text))
+
+    # Create charts side by side
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+    # Chart 1: Token Count Distribution
+    axes[0].hist(token_counts, bins=20, edgecolor='black')
+    axes[0].set_xlabel('Token Count')
+    axes[0].set_ylabel('Frequency')
+    axes[0].set_title('Distribution of Token Counts')
+
+    # Chart 2: Character Length Distribution
+    axes[1].hist(token_counts, bins=20, edgecolor='black')
+    axes[1].set_xlabel('Character Length')
+    axes[1].set_ylabel('Frequency')
+    axes[1].set_title('Distribution of Character Lengths')
+
+    for ax in axes:
+        ax.spines['top'].set_linewidth(0.5)
+        ax.spines['right'].set_linewidth(0.5)
+        ax.spines['bottom'].set_linewidth(0.5)
+        ax.spines['left'].set_linewidth(0.5)
+
+    # Calculate averages
+    avg_char_length = sum(char_lengths) / len(char_lengths)
+    avg_token_count = sum(token_counts) / len(token_counts)
+
+    # Display charts using Streamlit
+    st.pyplot(fig)
+
+    # Display average character length and token count
+    st.write(f"Average Character Length: {avg_char_length:.2f}")
+    st.write(f"Average Token Count: {avg_token_count:.2f}")
+
+    st.divider()
 
     st.subheader("a new section")
 

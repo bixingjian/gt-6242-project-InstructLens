@@ -9,3 +9,4 @@ scipy
 scikit-learn
 python-dotenv
 sentence_transformers
+tiktoken
