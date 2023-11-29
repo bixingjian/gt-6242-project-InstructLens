@@ -5,3 +5,4 @@
 *.png
 test.py
 *.jpg
+!alpaca_data.csv
