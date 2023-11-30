@@ -35,16 +35,18 @@ def main():
 
     # Display most similar 5 sentences
     st.subheader("Search similarity")
-    col1, col2 = st.columns([3, 2])  # Two columns for different contents
-    with col1:
-        # Search form in the left column
-        form = st.form('Embeddings')
-        question = form.text_input("Enter a sentence to search for semantic similarity", 
-                                   value="How can we reduce air pollution?")
-        num_sentences = form.number_input("Number of similar sentences to display", min_value=1, max_value=total_documents, value=3)
-        btn = form.form_submit_button("Run")
+
+    # with col1:
+    # Search form in the left column
+    form = st.form('Embeddings')
+    question = form.text_input("Enter a sentence to search for semantic similarity", 
+                                value="How can we reduce air pollution?")
+    num_sentences = form.number_input("Number of similar sentences to display", min_value=1, max_value=total_documents, value=3)
+    btn = form.form_submit_button("Run")
 
     model = SentenceTransformer('all-MiniLM-L6-v2')
+
+    col1, col2 = st.columns([2, 3])  # Two columns for different contents
 
     if btn:
         with col1: 
@@ -68,11 +70,40 @@ def main():
                 ax.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=colors, s=marker_size)
 
                 # Highlight the question point
-                ax.scatter(embeddings_2d[0, 0], embeddings_2d[0, 1], c='green', edgecolors='black', label='Query', s=10)
+                ax.scatter(embeddings_2d[0, 0], embeddings_2d[0, 1], c='yellow', edgecolors='black', label='Query', s=20)
 
                 ax.legend()
                 ax.grid(False)
                 st.pyplot(fig)
+
+    
+    with col2:
+        if btn:
+            with st.spinner("Searching for similar sentences..."):
+                # with st.expander("See Most Similar Sentences"):
+                    # Start of the fixed-height expander content
+                    # st.markdown('<div class="fixed-height-expander">', unsafe_allow_html=True)
+                question_embedding = model.encode(question, convert_to_tensor=True)
+                saved_embeddings_df = pd.read_csv("sentence_embeddings.csv", converters={'embedding': literal_eval})
+                sentence_embeddings = torch.tensor(saved_embeddings_df['embedding'].tolist())
+                
+                # Calculate similarities
+                similarities = util.pytorch_cos_sim(question_embedding, sentence_embeddings)[0].cpu().numpy()
+                
+                # Get the top similar sentence indices
+                top_indices = np.argsort(similarities)[::-1][1:num_sentences+1]
+
+                # Create a DataFrame for the similar sentences
+                similar_sentences_df = pd.DataFrame({
+                    'Similarity': similarities[top_indices],
+                    'Instruction': df.iloc[top_indices]['instruction'],
+                    'Output': df.iloc[top_indices]['output']
+                })
+
+                # Display the DataFrame
+                st.write(similar_sentences_df)
+
+                    # st.markdown('</div>', unsafe_allow_html=True)
 
         # t-SNE plot in the right column
     expander_css = """
@@ -86,41 +117,25 @@ def main():
     st.markdown(expander_css, unsafe_allow_html=True)
 
     # t-SNE plot and similar sentences in different columns
-    with col2:
-        if btn:
-            with st.spinner("Searching for similar sentences..."):
-                with st.expander("See Most Similar Sentences"):
-                    # Start of the fixed-height expander content
-                    st.markdown('<div class="fixed-height-expander">', unsafe_allow_html=True)
-                    similarities = util.pytorch_cos_sim(question_embedding, sentence_embeddings)[0].cpu().numpy()
+    # with col2:
+    #     if btn:
+    #         with st.spinner("Searching for similar sentences..."):
+    #             with st.expander("See Most Similar Sentences"):
+    #                 # Start of the fixed-height expander content
+    #                 st.markdown('<div class="fixed-height-expander">', unsafe_allow_html=True)
+    #                 similarities = util.pytorch_cos_sim(question_embedding, sentence_embeddings)[0].cpu().numpy()
 
-                    # Get the top 5 most similar sentence indices
-                    top_indices = np.argsort(similarities)[::-1][1:num_sentences+1]
+    #                 # Get the top 5 most similar sentence indices
+    #                 top_indices = np.argsort(similarities)[::-1][1:num_sentences+1]
 
-                    # Start of the scrollable container
-                    st.subheader("Top Similar Sentences:")
-                    for idx in top_indices:
-                        st.write(f"Instruction: {df.iloc[idx]['instruction']}")
-                        st.write(f"Output: {df.iloc[idx]['output']}")
-                        st.write(f"Similarity: {similarities[idx]:.4f}")
-                        st.write("---------")
-                    st.markdown('</div>', unsafe_allow_html=True)
-        # with col2:
-        #     with st.spinner("Searching for similar sentences..."):
-        #         with st.expander("See Most Similar Sentences"):
-        #         # Compute cosine similarities
-        #             similarities = util.pytorch_cos_sim(question_embedding, sentence_embeddings)[0].cpu().numpy()
-
-        #             # Get the top 5 most similar sentence indices
-        #             top_indices = np.argsort(similarities)[::-1][1:num_sentences+1]
-
-        #             # Start of the scrollable container
-        #             st.subheader("Top Similar Sentences:")
-        #             for idx in top_indices:
-        #                 st.write(f"Instruction: {df.iloc[idx]['instruction']}")
-        #                 st.write(f"Output: {df.iloc[idx]['output']}")
-        #                 st.write(f"Similarity: {similarities[idx]:.4f}")
-        #                 st.write("---------")
+    #                 # Start of the scrollable container
+    #                 st.subheader("Top Similar Sentences:")
+    #                 for idx in top_indices:
+    #                     st.write(f"Instruction: {df.iloc[idx]['instruction']}")
+    #                     st.write(f"Output: {df.iloc[idx]['output']}")
+    #                     st.write(f"Similarity: {similarities[idx]:.4f}")
+    #                     st.write("---------")
+    #                 st.markdown('</div>', unsafe_allow_html=True)
 
 
     # single sentence word len + token
