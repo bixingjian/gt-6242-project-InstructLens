@@ -1,8 +1,6 @@
-openai
 streamlit
 pandas
 numpy
-nomic
 matplotlib
 plotly
 scipy
@@ -10,3 +8,8 @@ scikit-learn
 python-dotenv
 sentence_transformers
 tiktoken
+torch
+gensim
+wordcloud
+sklearn
+nltk
