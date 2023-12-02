@@ -276,38 +276,43 @@ def main():
     st.subheader("Output Keywords Word Cloud")
     generate_wordcloud(output_keywords_df)
 
+#     st.subheader("Knowledge Analysis")
+#     data = {
+#     "Topic": [
+#         "sentence rewrite", "given input", "list make", 
+#         "following classify", "generate questions", "create poem", 
+#         "explain concept", "write poem", "words 100", 
+#         "word synonym", "article summarize", "example use", 
+#         "identify type", "using rewrite", "provide examples", 
+#         "story short", "suggest new", "numbers calculate", 
+#         "learning machine", "text edit"
+#     ],
+#     "Frequency": [
+#         7.48 + 1.62, 5.28 + 0.43, 4.31 + 0.74, 
+#         4.60 + 0.74, 4.86 + 0.35, 4.98 + 0.40, 
+#         3.90 + 1.12, 4.10 + 0.41, 3.90 + 0.28, 
+#         3.88 + 0.34, 2.81 + 2.75, 4.54 + 0.79, 
+#         3.91 + 0.89, 3.98 + 1.03, 4.71 + 0.71, 
+#         3.35 + 0.88, 1.96 + 1.10, 2.65 + 1.39, 
+#         1.90 + 1.52, 4.09 + 0.53
+#     ]
+# }
+
+#     # Convert to DataFrame
+#     df = pd.DataFrame(data)
+
+#     # Update the topics to verb+noun format
+#     df["Topic"] = df["Topic"].apply(lambda x: ' '.join(x.split()[::-1]))
+
+#     # Sort the DataFrame by frequency in descending order
+#     df_sorted = df.sort_values(by="Frequency", ascending=False)
+
+#     st.dataframe(df_sorted)
+
+
     st.subheader("Knowledge Analysis")
-    data = {
-    "Topic": [
-        "sentence rewrite", "given input", "list make", 
-        "following classify", "generate questions", "create poem", 
-        "explain concept", "write poem", "words 100", 
-        "word synonym", "article summarize", "example use", 
-        "identify type", "using rewrite", "provide examples", 
-        "story short", "suggest new", "numbers calculate", 
-        "learning machine", "text edit"
-    ],
-    "Frequency": [
-        7.48 + 1.62, 5.28 + 0.43, 4.31 + 0.74, 
-        4.60 + 0.74, 4.86 + 0.35, 4.98 + 0.40, 
-        3.90 + 1.12, 4.10 + 0.41, 3.90 + 0.28, 
-        3.88 + 0.34, 2.81 + 2.75, 4.54 + 0.79, 
-        3.91 + 0.89, 3.98 + 1.03, 4.71 + 0.71, 
-        3.35 + 0.88, 1.96 + 1.10, 2.65 + 1.39, 
-        1.90 + 1.52, 4.09 + 0.53
-    ]
-}
+    st.image("./27111701457876_.pic.jpg")
 
-    # Convert to DataFrame
-    df = pd.DataFrame(data)
-
-    # Update the topics to verb+noun format
-    df["Topic"] = df["Topic"].apply(lambda x: ' '.join(x.split()[::-1]))
-
-    # Sort the DataFrame by frequency in descending order
-    df_sorted = df.sort_values(by="Frequency", ascending=False)
-
-    st.dataframe(df_sorted)
 
 if __name__ == "__main__":
     main()
