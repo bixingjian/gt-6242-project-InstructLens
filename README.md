@@ -6,11 +6,9 @@ This package comprises a toolkit called "InstructLens" for visualizing instructi
 
 ## Installation
 Install all dependencies `pip install -r requirements.txt`
-- openai
 - streamlit
 - pandas
 - numpy
-- nomic
 - matplotlib
 - plotly
 - scipy
@@ -18,6 +16,11 @@ Install all dependencies `pip install -r requirements.txt`
 - python-dotenv
 - sentence_transformers
 - tiktoken
+- torch
+- gensim
+- wordcloud
+- sklearn
+- nltk
 
 ## Execution
 1. Run `streamlit run app.py`
